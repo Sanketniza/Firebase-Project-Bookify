@@ -5,17 +5,26 @@ import { Route , Routes  } from 'react-router-dom';
 import Register from './pages/Register';
 import Login from './pages/Login';
 
+// component
+import Navbar from './components/Navbar';
+import List from './pages/List';
+
 function App() {
   
   return (
         <>
-=
-            <Routes>
-                <Route path="/" element={<h1>Home</h1>} />
-                <Route path="/about" element={<h1>About</h1>} />
-                <Route path="/register" element={<Register />} />
-                <Route path="/login" element={<Login />} />
-            </Routes>
+            <div>
+
+                <Navbar />
+    
+                <Routes>
+                    <Route path="/" element={<h1>Home</h1>} />
+                    <Route path="/about" element={<h1>About</h1>} />
+                    <Route path="/register" element={<Register />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/bool/list" element={<List />} />
+                </Routes>
+            </div>
             
         </>
     )
