@@ -13,7 +13,7 @@ function List() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    await firebase.handleCreateNewListing(name, ibm, price, cover);
+    await firebase.handleCreateNewListing(name, ibm, price);
 
   };
   return (
@@ -52,13 +52,13 @@ function List() {
                 />
               </Form.Group>
 
-              <Form.Group className="mb-3" controlId="formGroupPassword">
+              {/* <Form.Group className="mb-3" controlId="formGroupPassword">
                 <Form.Label>Cover</Form.Label>
                 <Form.Control
                   onChange={(e) => setCover(e.target.files[0])}
                   type="file"
                 />
-              </Form.Group>
+              </Form.Group> */}
 
               
 

@@ -8,7 +8,7 @@ import { getAuth , createUserWithEmailAndPassword ,
     onAuthStateChanged 
 } from 'firebase/auth';
 
-import {getFirestore, collection , addDoc} from 'firebase/firestore'
+import {getFirestore, collection , addDoc , getDocs } from 'firebase/firestore'
 import { getStorage , ref , uploadBytes } from 'firebase/storage';
 
  const FirebaseContext = createContext(null);
@@ -43,11 +43,11 @@ export const FirebaseProvider = (props) => {
 
     useEffect(() => {
         onAuthStateChanged(firebaseAuth, (user) => {
-            console.log(user);
+            // console.log(user);
             if(user) setUser(user);
             else setUser(null);
         })
-    },[])
+    },[]);
 
     const signupWithEmailAndPassword = (email, password) => {
         return createUserWithEmailAndPassword(firebaseAuth, email, password);
@@ -61,16 +61,17 @@ export const FirebaseProvider = (props) => {
         return signInWithPopup(firebaseAuth, googleProvider);
     };
 
-    const handleCreateNewListing = async (name , ibm , price , cover) => {
+    const handleCreateNewListing = async (name , ibm , price ) => {
         // cover 
-        const imageRef = ref(storage, `uploaded/images/${Date.now}${cover.name}`);
-        const uploadResult = await uploadBytes(imageRef, cover);
+        // const imageRef = ref(storage, `uploaded/images/${Date.now}${cover.name}`);
+        // const uploadResult = await uploadBytes(imageRef, cover);
 
        const ok = await addDoc(collection(fireStore, "books"), {
             name ,
             ibm ,
             price ,
-            cover : uploadResult.ref.fullPath,
+            // cover ,
+            // cover : uploadResult.ref.fullPath,
             userId : user.uid ,
             userEmail : user.email , 
             userName : user.displayName ,
@@ -78,9 +79,15 @@ export const FirebaseProvider = (props) => {
             createdAt : Date.now()
         });
 
-        console.log(ok);
+        // console.log(ok);
         return ok;
     };
+
+    const listAllBooks = async () => {
+       const books = await getDocs(collection(fireStore, "books"));
+    //    console.log(books);
+       return books;
+    }
 
     const isLoggedIn = user ? true : false;
 
@@ -94,6 +101,7 @@ export const FirebaseProvider = (props) => {
             signupUserWithEmailAndPassword , 
             signWithGoogle ,
             handleCreateNewListing ,
+            listAllBooks,
 
         }}>
 
