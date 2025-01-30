@@ -10,6 +10,7 @@ import Navbar from './components/Navbar';
 import List from './pages/List';
 import Home from './pages/Home';
 import Detail from './pages/Detail';
+import ViewOrder from './pages/ViewOrder';
 
 function App() {
   
@@ -26,6 +27,7 @@ function App() {
                     <Route path="/login" element={<Login />} />
                     <Route path="/book/list" element={<List />} />
                     <Route path="/book/view/:bookId" element={<Detail />} />
+                    <Route path="/book/order" element={<ViewOrder />} />
                 </Routes>
             </div>
             

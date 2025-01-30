@@ -6,12 +6,10 @@ import { getAuth , createUserWithEmailAndPassword ,
     onAuthStateChanged 
 } from 'firebase/auth';
 
-import {getFirestore, collection , addDoc , getDocs, doc, getDoc } from 'firebase/firestore'
+import {getFirestore, collection , addDoc , getDocs, doc, getDoc , where ,query } from 'firebase/firestore'
 import { getStorage , ref , uploadBytes } from 'firebase/storage';
 
  const FirebaseContext = createContext(null);
-
-
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -22,8 +20,6 @@ const firebaseConfig = {
   messagingSenderId: "672945238635",
   appId: "1:672945238635:web:f9b87d89b26609ff1a372e"
 };
-
-
 
  export const useFirebase = () => useContext(FirebaseContext);
 
@@ -38,10 +34,8 @@ export const FirebaseProvider = (props) => {
 
     const [user , setUser] = useState(null);
 
-
     useEffect(() => {
         onAuthStateChanged(firebaseAuth, (user) => {
-            // console.log(user);
             if(user) setUser(user);
             else setUser(null);
         })
@@ -51,7 +45,6 @@ export const FirebaseProvider = (props) => {
         return createUserWithEmailAndPassword(firebaseAuth, email, password);
     };
    
-
     const signupUserWithEmailAndPassword = (email, password) => {
         return signInWithEmailAndPassword(firebaseAuth, email, password);
     };
@@ -61,30 +54,21 @@ export const FirebaseProvider = (props) => {
     };
 
     const handleCreateNewListing = async (name , ibm , price ) => {
-        // cover 
-        // const imageRef = ref(storage, `uploaded/images/${Date.now}${cover.name}`);
-        // const uploadResult = await uploadBytes(imageRef, cover);
-
        const ok = await addDoc(collection(fireStore, "books"), {
             name ,
             ibm ,
             price ,
-            // cover ,
-            // cover : uploadResult.ref.fullPath,
             userId : user.uid ,
             userEmail : user.email , 
             userName : user.displayName ,
             userUrl :user.photoURL,
             createdAt : Date.now()
         });
-
-        // console.log(ok);
         return ok;
     };
 
     const listAllBooks = async () => {
        const books = await getDocs(collection(fireStore, "books"));
-    //    console.log(books);
        return books;
     }
 
@@ -96,9 +80,6 @@ export const FirebaseProvider = (props) => {
 
     const placeOrder = async (bookId ,qyt) => {
         const docRef = collection(fireStore, "books", bookId , "order");
-        // const docSnap = await getDoc(docRef);
-        // return docSnap.exists() ? docSnap.data() : null;
-
         const order = await addDoc(docRef, {
             userId : user.uid ,
             userEmail : user.email , 
@@ -110,13 +91,20 @@ export const FirebaseProvider = (props) => {
         return order;
     }
 
+    const fetchMyOrder = async () => {
+        const collectionRef = collection(fireStore, "books");
+        const q = query(collectionRef , where("userId" , "==" , user.uid ));
+        const querySnapshot = await getDocs(q);
+
+        // console.log(querySnapshot);
+
+        return querySnapshot;
+    }
+
     const isLoggedIn = user ? true : false;
 
-
     return (
-
         <FirebaseContext.Provider value={{ 
-
             signupWithEmailAndPassword  , 
             isLoggedIn , 
             signupUserWithEmailAndPassword , 
@@ -125,11 +113,9 @@ export const FirebaseProvider = (props) => {
             getBooksById ,
             placeOrder,
             listAllBooks,
-
+            fetchMyOrder,
         }}>
-
             {props.children}
-
         </FirebaseContext.Provider>
     )
 }
