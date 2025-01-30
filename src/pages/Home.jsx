@@ -17,7 +17,7 @@ function Home() {
                 {
                     books.length > 0 ? (
                         books.map((book) => (
-                            <Cards {...book.data()} key={book.id}/> // Pass the book data as a prop to the Cards component
+                            <Cards key={book.id} id={book.id} {...book.data()} /> // Pass the book data as a prop to the Cards component
                         ))
                     ) : (
                         <p>No books available</p>

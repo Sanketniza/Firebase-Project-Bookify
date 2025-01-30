@@ -1,5 +1,3 @@
-
-
 import {createContext , useContext , useState , useEffect} from 'react'
 import { initializeApp } from "firebase/app";
 import { getAuth , createUserWithEmailAndPassword , 
@@ -8,7 +6,7 @@ import { getAuth , createUserWithEmailAndPassword ,
     onAuthStateChanged 
 } from 'firebase/auth';
 
-import {getFirestore, collection , addDoc , getDocs } from 'firebase/firestore'
+import {getFirestore, collection , addDoc , getDocs, doc, getDoc } from 'firebase/firestore'
 import { getStorage , ref , uploadBytes } from 'firebase/storage';
 
  const FirebaseContext = createContext(null);
@@ -52,6 +50,7 @@ export const FirebaseProvider = (props) => {
     const signupWithEmailAndPassword = (email, password) => {
         return createUserWithEmailAndPassword(firebaseAuth, email, password);
     };
+   
 
     const signupUserWithEmailAndPassword = (email, password) => {
         return signInWithEmailAndPassword(firebaseAuth, email, password);
@@ -89,6 +88,28 @@ export const FirebaseProvider = (props) => {
        return books;
     }
 
+    const getBooksById = async (bookId) => {
+        const docRef = doc(fireStore, "books", bookId);
+        const docSnap = await getDoc(docRef);
+        return docSnap.exists() ? docSnap.data() : null;
+    }
+
+    const placeOrder = async (bookId ,qyt) => {
+        const docRef = collection(fireStore, "books", bookId , "order");
+        // const docSnap = await getDoc(docRef);
+        // return docSnap.exists() ? docSnap.data() : null;
+
+        const order = await addDoc(docRef, {
+            userId : user.uid ,
+            userEmail : user.email , 
+            userName : user.displayName ,
+            userUrl :user.photoURL,
+            qyt ,
+            createdAt : Date.now()
+        });
+        return order;
+    }
+
     const isLoggedIn = user ? true : false;
 
 
@@ -101,6 +122,8 @@ export const FirebaseProvider = (props) => {
             signupUserWithEmailAndPassword , 
             signWithGoogle ,
             handleCreateNewListing ,
+            getBooksById ,
+            placeOrder,
             listAllBooks,
 
         }}>

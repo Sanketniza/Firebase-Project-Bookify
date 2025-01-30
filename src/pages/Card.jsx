@@ -1,8 +1,12 @@
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import CardGroup from 'react-bootstrap/CardGroup'
+import  { useNavigate } from 'react-router-dom'
 
 const Cards = (props) => {
+
+    const navigate = useNavigate();
+
 
   return (
 
@@ -15,7 +19,7 @@ const Cards = (props) => {
                   <Card.Text>
                     This Books is Title {props.name} and price is {props.price}
                   </Card.Text>
-                  <Button variant="primary">Go somewhere</Button>
+                  <Button onClick={(e) => navigate(`/book/view/${props.id}`)} variant="primary">View</Button>
                 </Card.Body>
              </Card>
 
@@ -24,4 +28,4 @@ const Cards = (props) => {
     )
 }
 
-export default Cards
+export default Cards;  
